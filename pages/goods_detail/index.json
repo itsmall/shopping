@@ -1,0 +1,6 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "商城-详情",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}
