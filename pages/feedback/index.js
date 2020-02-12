@@ -1,66 +1,177 @@
-// pages/feedback/index.js
+import {
+  request
+} from '../../request/index';
+
+import
+regeneratorRuntime
+from '../../lib/runtime/runtime';
+
+/**
+ * +的功能
+ * 
+ */
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    tabs: [{
+        id: 0,
+        value: "体验问题",
+        isActive: true
+      },
+      {
+        id: 1,
+        value: "商品、商家投诉",
+        isActive: false
+      }
+    ],
+    chooseImgs: [],
+    textVal: ''
+  },
+  //外网的图片的路径数组
+  UPLoadImgs: [],
+  handleTabsItemChange(e) {
+    const index = e.detail;
+    let {
+      tabs
+    } = this.data;
+    tabs.forEach((v, i) => i === index ? v.isActive = true : v.isActive = false);
+    this.setData({
+      tabs
+    })
+  },
+  //"+"功能
+  handleChooseImg() {
+    // 调用内置选择图片api
+    wx.chooseImage({
+      count: 9,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success: (result) => {
+        this.setData({
+          chooseImgs: [...this.data.chooseImgs, ...result.tempFilePaths]
+        })
+      },
+      fail: () => {},
+      complete: () => {}
+    });
 
   },
+  //删除图片
+  handleRemoveImg(e) {
+    const {
+      index
+    } = e.currentTarget.dataset;
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
+    let {
+      chooseImgs
+    } = this.data;
 
+    // 删除
+    chooseImgs.splice(index, 1)
+
+    this.setData({
+      chooseImgs
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
+  //获取文本域的内容
+  handleInputText(e) {
+    this.setData({
+      textVal: e.detail.value
+    })
   },
+  //提交
+  async handleFormSubmit() {
+    const {
+      textVal,
+      chooseImgs
+    } = this.data;
+    if (!textVal.trim()) {
+      //不合法
+      wx.showToast({
+        title: '输入不合法！！！',
+        icon: 'none',
+        mask: true
+      });
+      return;
+    }
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
+    // wx.request({
+    //   url: 'https://images.ac.cn/api/upload',
+    //   data: {
+    //     "apiType": "this",
+    //     "image": chooseImgs
+    //   },
+    //   header: {
+    //     'content-type': 'application/json',
+    //     "token": "5f40b5e3a9f47380cccd300c215d"
+    //   },
+    //   method: 'post',
+    //   dataType: 'json',
+    //   responseType: 'text',
+    //   success: (res) => {
+    //     let url = JSON.parse(res.data);
+    //   }
+    // });
 
-  },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
+    wx.showLoading({
+      title: "正在加载中。。。",
+      mask: true
+    });
 
-  },
+    if (chooseImgs.length != 0) {
+      chooseImgs.forEach((v, i) => {
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
+        wx.uploadFile({
+          //上传的路径
+          url: 'https://images.ac.cn/Home/Index/UploadAction/',
+          //上传文件路径
+          filePath: v,
+          //上传文件的名称
+          name: 'file',
+          //顺带文本信息
+          formData: {},
+          success: (res) => {
+            console.log(res);
 
-  },
+            // let url = JSON.parse(res.data.url);
+            // this.UPLoadImgs.push(url)
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
+            if (i === chooseImgs.length - 1) {
+              wx.hideLoading();
+              console.log("把文本和图片数组提交到后台");
+              //重置
+              this.setData({
+                textVal: '',
+                chooseImgs: []
+              })
+              wx.navigateBack({
+                delta: 1
+              });
 
-  },
+            }
+          }
+        });
+      });
+    }else{
+      wx.hideLoading();
+              console.log("把文本提交到后台");
+              //重置
+              this.setData({
+                textVal: '',
+                chooseImgs: []
+              })
+              wx.navigateBack({
+                delta: 1
+              });
+    }
+    
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
 
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
 
   }
 })

@@ -1,2 +1,51 @@
-<!--pages/user/index.wxml-->
-<text>pages/user/index.wxml</text>
+<view class="user_info_wrap">
+    <block wx:if="{{userinfo.nickName}}">
+        <view class="user_img_wrap">
+            <image class="user_bg" src="{{userinfo.avatarUrl}}"></image>
+            <view class="user_info">
+                <image class="user_icon" src="{{userinfo.avatarUrl}}"></image>
+                <view class="user_name">{{userinfo.nickName}}</view>
+            </view>
+        </view>
+    </block>
+    <block wx:else>
+        <view class="user_btn">
+            <navigator url="/pages/login/index">登录</navigator>
+        </view>
+    </block>
+</view>
+<view class="user_content">
+    <view class="user_main">
+        <!-- 历史足迹 -->
+        <view class="history_wrap">
+            <navigator url="{{item.url}}" wx:for="{{history}}" wx:key="id">
+                <view class="his_num">{{item.his_num}}</view>
+                <view class="his_name">{{item.his_name}}</view>
+            </navigator>
+        </view>
+        <!-- 我的订单 -->
+        <view class="orders_wrap">
+            <view class="orders_title">我的订单</view>
+            <view class="orders_content">
+                <navigator wx:for="{{orders}}" wx:key="id"
+                 url="/pages/order/index?type={{item.id}}">
+                    <view class="iconfont {{item.icon}}"></view>
+                    <view class="order_name">{{item.name}}</view>
+                </navigator>
+            </view>
+        </view>
+        <!-- 收货地址管理 -->
+        <view class="address_wrap">收货地址管理</view>
+        <!-- 应用信息相关 -->
+        <view class="app_info_wrap">
+            <view class="app_info_item app_info_contact">
+                <text>联系客服</text>
+                <text>13777719936</text>
+            </view>
+            <navigator url="/pages/feedback/index" class="app_info_item" >意见反馈</navigator>
+            <view class="app_info_item">关于我们</view>
+        </view>
+        <!-- 推荐 -->
+        <view class="recommend_wrap">推荐给他人</view>
+    </view>
+</view>

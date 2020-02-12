@@ -26,6 +26,7 @@
 
 .icon-shoucang1:before {
   content: "\e614";
+ 
 }
 .icon-receipt-address:before {
   content: "\e673";

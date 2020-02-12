@@ -1,4 +1,4 @@
-.tabs {}
+/* .tabs {background-color: #fff;} */
 
 .tabs_title {
   display: flex;

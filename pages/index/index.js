@@ -19,6 +19,8 @@ Page({
     request({
       url: '/home/swiperdata'
     }).then(result => {
+      result.forEach(v => v.navigator_url = v.navigator_url.replace('main', 'index'));
+
       this.setData({
         swiperList: result
       })
@@ -28,6 +30,7 @@ Page({
     request({
       url: '/home/catitems'
     }).then(result => {
+      result[0].navigator_url = '/pages/category/index';
       this.setData({
         catesList: result
       })
@@ -37,37 +40,15 @@ Page({
     request({
       url: '/home/floordata'
     }).then(result => {
+      // result['product_list'].forEach(v => v.navigator_url = v.navigator_url.replace('?query', '/index?query'));
+      result.forEach(v => {
+        v.product_list.forEach(v => v.navigator_url = v.navigator_url.replace('?query', '/index?query'));
+      });
+
       this.setData({
         floorList: result
       })
     })
   },
-  onReady: function () {
-
-  },
-  onShow: function () {
-
-  },
-  onHide: function () {
-
-  },
-  onUnload: function () {
-
-  },
-  onPullDownRefresh: function () {
-
-  },
-  onReachBottom: function () {
-
-  },
-  onShareAppMessage: function () {
-
-  },
-  onPageScroll: function () {
-
-  },
-  //item(index,pagePath,text)
-  onTabItemTap: function (item) {
-
-  }
+ 
 });
